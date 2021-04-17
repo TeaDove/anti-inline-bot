@@ -1,3 +1,6 @@
+src/secret_data/*
+!src/secret_data/README.md
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

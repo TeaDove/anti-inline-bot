@@ -1,0 +1,11 @@
+Hello, it is anti-inline bot
+I will delete all messages sended via bots
+
+Make me <b>admin</b> and allow me to <b>delete messeages</b>
+
+Commands(only for admins):
+/start - show this text
+/toggle - toggle deletion messages via inline bots
+/q - toggle showing warning, when message sended via inline bot
+
+Source code: https://github.com/TeaDove/Anti-Inline-Bot
