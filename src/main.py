@@ -24,6 +24,7 @@ async def get_chat_dict(chat_id: int) -> dict:
     default_dict = {b'deletion': 1, b'q': 1}
     if not bool(chat_dict):
         r.hset(f"{NAME}:{chat_id}", mapping=default_dict)
+        chat_dict = default_dict
     elif set(chat_dict.keys()) != set(default_dict.keys()):
         r.delete(f"{NAME}:{chat_id}")
         r.hset(f"{NAME}:{chat_id}", mapping=default_dict)
@@ -70,9 +71,10 @@ async def send(message: types.Message):
             await message.answer(f"No I <b>will{'' if to_set == b'1' else ' not'}</b> omit warning", parse_mode="html")
 
 
-@dp.message_handler()
+@dp.message_handler(content_types=types.ContentType.ANY)
 async def send(message: types.Message): 
     chat_dict = await get_chat_dict(message.chat.id)
+    print(message)
     if chat_dict[b'deletion'] == b'1' and 'via_bot' in message:
         try:
             await message.delete()
