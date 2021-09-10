@@ -32,19 +32,19 @@ async def get_chat_dict(chat_id: int) -> dict:
 
 
 @dp.my_chat_member_handler()
-async def send(event: types.ChatMemberUpdated): 
+async def send(event: types.ChatMemberUpdated):
     if "new_chat_member" in event and event["new_chat_member"]["status"] == "member":
         await event.bot.send_message(event["chat"]["id"], START, parse_mode="html")
         await get_chat_dict(event["chat"]["id"])
 
 
 @dp.message_handler(commands=['start', 'help'])
-async def send(message: types.Message): 
+async def send(message: types.Message):
     await message.answer(START, parse_mode="html")
 
 
 @dp.message_handler(commands=['toggle'])
-async def send(message: types.Message): 
+async def send(message: types.Message):
     if message.chat.type == types.ChatType.PRIVATE:
         await message.answer("Error, you can't change this setting in private chat")
     else:
@@ -55,10 +55,14 @@ async def send(message: types.Message):
             chat_dict[b'deletion'] = to_set
             r.hset(f"{NAME}:{message.chat.id}", mapping=chat_dict)
             await message.answer(f"No I <b>will{'' if to_set == b'1' else ' not'}</b> delete messages via inline bots", parse_mode="html")
-
+        else:
+            try:
+                await message.delete()
+            except:
+                pass
 
 @dp.message_handler(commands=['q'])
-async def send(message: types.Message): 
+async def send(message: types.Message):
     if message.chat.type == types.ChatType.PRIVATE:
         await message.answer("Error, you can't change this setting in private chat")
     else:
@@ -69,10 +73,14 @@ async def send(message: types.Message):
             chat_dict[b'q'] = to_set
             r.hset(f"{NAME}:{message.chat.id}", mapping=chat_dict)
             await message.answer(f"No I <b>will{'' if to_set == b'1' else ' not'}</b> omit warning", parse_mode="html")
-
+        else:
+            try:
+                await message.delete()
+            except:
+                pass
 
 @dp.message_handler(content_types=types.ContentType.ANY)
-async def send(message: types.Message): 
+async def send(message: types.Message):
     chat_dict = await get_chat_dict(message.chat.id)
     print(message)
     if chat_dict[b'deletion'] == b'1' and 'via_bot' in message:
